@@ -13,8 +13,8 @@ body.claro{--bg:#eef0f5;--card:#fff;--btn:#e3e6ee;--txt:#1e1e2e;--visor:#f6f7fb;
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;display:flex;justify-content:center;align-items:center;background-color:var(--bg);background-size:cover;background-position:center;background-attachment:fixed;font-family:Arial,sans-serif;color:var(--txt)}
 .calc{background:var(--card);padding:18px;border-radius:18px;width:300px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
-body.comfoto .calc{background:rgba(43,43,61,.6);backdrop-filter:blur(8px)}
-body.claro.comfoto .calc{background:rgba(255,255,255,.6)}
+body.comfoto .calc{background:rgba(43,43,61,.3)}
+body.claro.comfoto .calc{background:rgba(255,255,255,.3)}
 .topo{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-weight:bold}
 .mini{background:var(--btn);color:var(--txt);border:none;border-radius:8px;padding:6px 10px;margin-left:4px;cursor:pointer;font-size:15px}
 .visor{background:var(--visor);border-radius:10px;padding:10px 12px;margin-bottom:12px;text-align:right;min-height:80px;word-break:break-all}
@@ -174,12 +174,17 @@ function escolherFoto(inp){
   const f=inp.files[0];if(!f)return;
   const img=new Image();
   img.onload=()=>{
-    const esc=Math.min(1,1280/Math.max(img.width,img.height));
-    const c=document.createElement('canvas');
-    c.width=img.width*esc;c.height=img.height*esc;
-    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-    const url=c.toDataURL('image/jpeg',0.8);
-    try{localStorage.setItem('calc-foto',url);}catch{alert('Foto muito grande, tenta outra.');}
+    const tentar=(tam,q)=>{
+      const esc=Math.min(1,tam/Math.max(img.width,img.height));
+      const c=document.createElement('canvas');
+      c.width=img.width*esc;c.height=img.height*esc;
+      const g=c.getContext('2d');g.imageSmoothingQuality='high';
+      g.drawImage(img,0,0,c.width,c.height);
+      return c.toDataURL('image/jpeg',q);
+    };
+    let url=tentar(2200,0.92);
+    try{localStorage.setItem('calc-foto',url);}
+    catch{url=tentar(1600,0.85);try{localStorage.setItem('calc-foto',url);}catch{alert('Foto muito grande, tenta outra.');}}
     aplicarFoto(url);URL.revokeObjectURL(img.src);
   };
   img.src=URL.createObjectURL(f);inp.value='';
