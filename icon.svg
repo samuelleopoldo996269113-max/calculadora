@@ -1,13 +1,38 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="100" fill="#2b2b3d"/>
-  <rect x="86" y="70" width="340" height="110" rx="22" fill="#11111b"/>
-  <text x="396" y="148" font-family="Arial" font-size="64" fill="#50fa7b" text-anchor="end">123</text>
-  <rect x="86" y="210" width="150" height="100" rx="20" fill="#bd93f9"/>
-  <rect x="276" y="210" width="150" height="100" rx="20" fill="#bd93f9"/>
-  <rect x="86" y="340" width="150" height="100" rx="20" fill="#44475a"/>
-  <rect x="276" y="340" width="150" height="100" rx="20" fill="#50fa7b"/>
-  <text x="161" y="280" font-family="Arial" font-size="70" fill="#000" text-anchor="middle">+</text>
-  <text x="351" y="280" font-family="Arial" font-size="70" fill="#000" text-anchor="middle">×</text>
-  <text x="161" y="410" font-family="Arial" font-size="70" fill="#fff" text-anchor="middle">−</text>
-  <text x="351" y="410" font-family="Arial" font-size="70" fill="#000" text-anchor="middle">=</text>
+  <defs>
+    <radialGradient id="luz" cx="50%" cy="40%" r="70%">
+      <stop offset="0" stop-color="#3a2f22"/>
+      <stop offset="1" stop-color="#0d0b08"/>
+    </radialGradient>
+    <linearGradient id="corpo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c9b98f"/>
+      <stop offset="1" stop-color="#8a7a55"/>
+    </linearGradient>
+    <linearGradient id="lcd" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9fbf6a"/>
+      <stop offset="1" stop-color="#6f8f43"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#luz)"/>
+  <rect x="116" y="56" width="280" height="400" rx="28" fill="#000" opacity=".45" transform="translate(10 12)"/>
+  <rect x="116" y="56" width="280" height="400" rx="28" fill="url(#corpo)" stroke="#4a3f2a" stroke-width="6"/>
+  <rect x="146" y="86" width="220" height="90" rx="10" fill="#2a2418"/>
+  <rect x="156" y="96" width="200" height="70" rx="6" fill="url(#lcd)"/>
+  <text x="344" y="150" text-anchor="end" font-family="Courier New,monospace" font-size="44" font-weight="bold" fill="#1f2a12">0.00</text>
+  <g fill="#3b3428" stroke="#1c1810" stroke-width="3">
+    <rect x="146" y="200" width="44" height="40" rx="6"/><rect x="204" y="200" width="44" height="40" rx="6"/><rect x="262" y="200" width="44" height="40" rx="6"/>
+    <rect x="146" y="254" width="44" height="40" rx="6"/><rect x="204" y="254" width="44" height="40" rx="6"/><rect x="262" y="254" width="44" height="40" rx="6"/>
+    <rect x="146" y="308" width="44" height="40" rx="6"/><rect x="204" y="308" width="44" height="40" rx="6"/><rect x="262" y="308" width="44" height="40" rx="6"/>
+    <rect x="146" y="362" width="102" height="40" rx="6"/><rect x="262" y="362" width="44" height="40" rx="6"/>
+  </g>
+  <rect x="320" y="200" width="46" height="94" rx="6" fill="#8b1a1a" stroke="#3d0a0a" stroke-width="3"/>
+  <rect x="320" y="308" width="46" height="94" rx="6" fill="#5a4e36" stroke="#1c1810" stroke-width="3"/>
+  <g font-family="Courier New,monospace" font-size="22" font-weight="bold" fill="#d8ccaa" text-anchor="middle">
+    <text x="168" y="228">7</text><text x="226" y="228">8</text><text x="284" y="228">9</text>
+    <text x="168" y="282">4</text><text x="226" y="282">5</text><text x="284" y="282">6</text>
+    <text x="168" y="336">1</text><text x="226" y="336">2</text><text x="284" y="336">3</text>
+    <text x="197" y="390">0</text><text x="284" y="390">.</text>
+    <text x="343" y="254">C</text><text x="343" y="362">=</text>
+  </g>
+  <path d="M130 420 q40 -10 70 6 M330 70 q20 14 50 4" stroke="#5a4a30" stroke-width="4" fill="none" opacity=".6"/>
 </svg>
