@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2b2b3d">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<title>Calculadora</title>
+<style>
+:root{--bg:#1e1e2e;--card:#2b2b3d;--btn:#44475a;--txt:#fff;--visor:#11111b;--op:#bd93f9;--esp:#ff5555;--ok:#50fa7b;--sci:#363650}
+body.claro{--bg:#eef0f5;--card:#fff;--btn:#e3e6ee;--txt:#1e1e2e;--visor:#f6f7fb;--sci:#d9dcf0}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;justify-content:center;align-items:center;background:var(--bg);font-family:Arial,sans-serif;color:var(--txt)}
+.calc{background:var(--card);padding:18px;border-radius:18px;width:300px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.topo{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-weight:bold}
+.mini{background:var(--btn);color:var(--txt);border:none;border-radius:8px;padding:6px 10px;margin-left:4px;cursor:pointer;font-size:15px}
+.visor{background:var(--visor);border-radius:10px;padding:10px 12px;margin-bottom:12px;text-align:right;min-height:80px;word-break:break-all}
+#conta{font-size:28px}
+#previa{font-size:16px;opacity:.6;min-height:20px;margin-top:4px}
+.grade{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.grade+.grade{margin-top:8px}
+.oculto{display:none}
+.t{height:52px;font-size:20px;border:none;border-radius:10px;cursor:pointer;background:var(--btn);color:var(--txt)}
+.t:hover{filter:brightness(1.2)}
+.t:active{transform:scale(.95)}
+.op{background:var(--op);color:#000}
+.esp{background:var(--esp);color:#fff}
+.ok{background:var(--ok);color:#000;grid-column:span 4}
+.sci{background:var(--sci);font-size:16px}
+#historico{position:fixed;top:0;right:0;height:100vh;width:290px;background:var(--card);padding:16px;transform:translateX(100%);transition:transform .3s;display:flex;flex-direction:column;box-shadow:-5px 0 20px rgba(0,0,0,.4)}
+#historico.aberto{transform:translateX(0)}
+#lista{flex:1;overflow-y:auto}
+.item{background:var(--visor);border-radius:8px;padding:8px 10px;margin-bottom:8px;cursor:pointer;text-align:right;word-break:break-all}
+.item small{opacity:.5;display:block;text-align:left}
+.vazio{opacity:.5;text-align:center}
+.limparHist{border:none;border-radius:10px;padding:12px;cursor:pointer;font-size:15px}
+</style>
+</head>
+<body>
+<div class="calc">
+  <div class="topo">
+    <span>Calculadora</span>
+    <div>
+      <button class="mini" onclick="alternarCientifica()">fx</button>
+      <button class="mini" onclick="trocarTema()">🌓</button>
+      <button class="mini" onclick="alternarHistorico()">🕘</button>
+    </div>
+  </div>
+  <div class="visor"><div id="conta">0</div><div id="previa"></div></div>
+  <div class="grade oculto" id="cientifica">
+    <button class="t sci" id="modo" onclick="trocarModo()">DEG</button>
+    <button class="t sci" onclick="add('sin(')">sin</button>
+    <button class="t sci" onclick="add('cos(')">cos</button>
+    <button class="t sci" onclick="add('tan(')">tan</button>
+    <button class="t sci" onclick="add('ln(')">ln</button>
+    <button class="t sci" onclick="add('log(')">log</button>
+    <button class="t sci" onclick="add('√(')">√</button>
+    <button class="t sci" onclick="add('^')">xʸ</button>
+    <button class="t sci" onclick="unario('x²')">x²</button>
+    <button class="t sci" onclick="unario('x³')">x³</button>
+    <button class="t sci" onclick="unario('1/x')">1/x</button>
+    <button class="t sci" onclick="unario('n!')">n!</button>
+    <button class="t sci" onclick="add('π')">π</button>
+    <button class="t sci" onclick="add('e')">e</button>
+    <button class="t sci" onclick="add('∛(')">∛</button>
+    <button class="t sci" onclick="unario('±')">±</button>
+  </div>
+  <div class="grade">
+    <button class="t esp" onclick="limpar()">C</button>
+    <button class="t esp" onclick="apagar()">⌫</button>
+    <button class="t op" onclick="add('%')">%</button>
+    <button class="t op" onclick="add('÷')">÷</button>
+    <button class="t" onclick="add('7')">7</button>
+    <button class="t" onclick="add('8')">8</button>
+    <button class="t" onclick="add('9')">9</button>
+    <button class="t op" onclick="add('×')">×</button>
+    <button class="t" onclick="add('4')">4</button>
+    <button class="t" onclick="add('5')">5</button>
+    <button class="t" onclick="add('6')">6</button>
+    <button class="t op" onclick="add('−')">−</button>
+    <button class="t" onclick="add('1')">1</button>
+    <button class="t" onclick="add('2')">2</button>
+    <button class="t" onclick="add('3')">3</button>
+    <button class="t op" onclick="add('+')">+</button>
+    <button class="t" onclick="add('(')">(</button>
+    <button class="t" onclick="add(')')">)</button>
+    <button class="t" onclick="add('0')">0</button>
+    <button class="t" onclick="add(',')">,</button>
+    <button class="t ok" onclick="igual()">=</button>
+  </div>
+</div>
+<aside id="historico">
+  <div class="topo"><span>Histórico</span><button class="mini" onclick="alternarHistorico()">✕</button></div>
+  <div id="lista"></div>
+  <button class="limparHist esp" onclick="apagarHistorico()">Apagar histórico</button>
+</aside>
+<script>
+const $=id=>document.getElementById(id);
+let expr='',graus=true;
+let hist=JSON.parse(localStorage.getItem('calc-historico')||'[]');
+function formatar(v){if(Math.abs(v)<1e-12)v=0;return String(parseFloat(v.toPrecision(12))).replace('.',',');}
+function paraJS(t){
+  let s=t.replace(/([\d,)πe])(?=[(πe√∛sctl])/g,'$1×').replace(/([)πe])(?=\d)/g,'$1×');
+  const a=(s.match(/\(/g)||[]).length-(s.match(/\)/g)||[]).length;
+  s+=')'.repeat(Math.max(0,a));
+  return s.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/,/g,'.').replace(/%/g,'/100').replace(/\^/g,'**').replace(/π/g,'PI').replace(/e/g,'E').replace(/√/g,'sqrt').replace(/∛/g,'cbrt');
+}
+function avaliar(t){
+  if(!t)return null;
+  try{
+    const s=paraJS(t);
+    if(!/^[\d+\-*/().\sA-Za-z]*$/.test(s))return null;
+    const k=graus?Math.PI/180:1;
+    const f=new Function('sin','cos','tan','log','ln','sqrt','cbrt','PI','E','"use strict";return ('+s+')');
+    const v=f(x=>Math.sin(x*k),x=>Math.cos(x*k),x=>Math.tan(x*k),Math.log10,Math.log,Math.sqrt,Math.cbrt,Math.PI,Math.E);
+    return (typeof v==='number'&&isFinite(v))?v:null;
+  }catch{return null;}
+}
+function mostrar(){
+  $('conta').textContent=expr||'0';
+  const v=avaliar(expr);
+  $('previa').textContent=(v!==null&&formatar(v)!==expr)?'= '+formatar(v):'';
+}
+function add(v){if(expr==='Erro')expr='';expr+=v;mostrar();}
+function limpar(){expr='';mostrar();}
+function apagar(){
+  const m=expr.match(/(sin\(|cos\(|tan\(|log\(|ln\(|√\(|∛\(|Erro)$/);
+  expr=m?expr.slice(0,-m[0].length):expr.slice(0,-1);mostrar();
+}
+function guardar(conta,res){hist.unshift({conta,res,data:new Date().toLocaleString('pt-BR')});salvarHistorico();}
+function igual(){
+  if(!expr)return;
+  const v=avaliar(expr);
+  if(v===null){expr='Erro';mostrar();return;}
+  const r=formatar(v);guardar(expr,r);expr=r;mostrar();
+}
+function fatorial(n){if(n<0||!Number.isInteger(n)||n>170)return NaN;let r=1;for(let i=2;i<=n;i++)r*=i;return r;}
+const unarios={'x²':v=>v*v,'x³':v=>v**3,'1/x':v=>1/v,'n!':fatorial,'±':v=>-v};
+function unario(nome){
+  const v=avaliar(expr);if(v===null)return;
+  const r=unarios[nome](v);
+  if(!isFinite(r)){expr='Erro';mostrar();return;}
+  guardar(nome+'('+expr+')',formatar(r));expr=formatar(r);mostrar();
+}
+function trocarModo(){graus=!graus;$('modo').textContent=graus?'DEG':'RAD';mostrar();}
+function alternarCientifica(){$('cientifica').classList.toggle('oculto');}
+function trocarTema(){document.body.classList.toggle('claro');localStorage.setItem('calc-tema',document.body.classList.contains('claro')?'claro':'escuro');}
+function alternarHistorico(){$('historico').classList.toggle('aberto');}
+function salvarHistorico(){localStorage.setItem('calc-historico',JSON.stringify(hist));mostrarHistorico();}
+function mostrarHistorico(){
+  const l=$('lista');
+  l.innerHTML=hist.length?'':'<p class="vazio">Nenhuma conta ainda.</p>';
+  hist.forEach(h=>{
+    const d=document.createElement('div');d.className='item';
+    d.innerHTML=`<small>${h.data}</small><div>${h.conta}</div><b>= ${h.res}</b>`;
+    d.onclick=()=>{expr=h.res;mostrar();};l.appendChild(d);
+  });
+}
+function apagarHistorico(){if(confirm('Apagar todo o histórico?')){hist=[];salvarHistorico();}}
+document.addEventListener('keydown',e=>{
+  const k=e.key;
+  if(/^[0-9()%^]$/.test(k))add(k);
+  else if(k==='.'||k===',')add(',');
+  else if(k==='+')add('+');
+  else if(k==='-')add('−');
+  else if(k==='*')add('×');
+  else if(k==='/'){e.preventDefault();add('÷');}
+  else if(k==='Enter'||k==='='){e.preventDefault();igual();}
+  else if(k==='Backspace')apagar();
+  else if(k==='Escape')limpar();
+});
+if(localStorage.getItem('calc-tema')==='claro')document.body.classList.add('claro');
+mostrarHistorico();mostrar();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>

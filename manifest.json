@@ -1,0 +1,11 @@
+{
+  "name": "Calculadora do Samuel",
+  "short_name": "Calculadora",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1e1e2e",
+  "theme_color": "#2b2b3d",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
